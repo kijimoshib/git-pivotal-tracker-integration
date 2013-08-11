@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby -U
-# Git Pivotal Tracker Integration
+# Git Tracker
 # Copyright (c) 2013 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'git-tracker/command/finish'
-require 'optparse'
-options = {}
+require 'git-tracker/util/util'
 
-options[:push] = true
+# Utilities for dealing with the shell
+class GitTracker::Util::Shell
 
-optparse = OptionParser.new do |opts|
+  # Executes a command
+  #
+  # @param [String] command the command to execute
+  # @param [Boolean] abort_on_failure whether to +Kernel#abort+ with +FAIL+ as
+  #   the message when the command's +Status#existstatus+ is not +0+
+  # @return [String] the result of the command
+  def self.exec(command, abort_on_failure = true)
+    result = `#{command}`
+    if $?.exitstatus != 0 && abort_on_failure
+      abort 'FAIL'
+    end
 
-  opts.on( '-b', '--base BASE', "Base branch for pull request" ) do |base|
-    options[:base] = base
+    result
   end
 
-  opts.on( '-h', '--head HEAD', "Head branch for pull request" ) do |head|
-    options[:head] = head
-  end
-
-  opts.on( '-p', '--[no-]push', "Make push to origin" ) do |p|
-    options[:push] = p
-  end
 end
-
-optparse.parse!
-
-GitTracker::Command::Finish.new().run options

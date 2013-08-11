@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby -U
-# Git Pivotal Tracker Integration
+# Git Tracker
 # Copyright (c) 2013 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'git-tracker/command/finish'
-require 'optparse'
-options = {}
+require 'git-tracker/command/base'
+require 'git-tracker/command/command'
+require 'git-tracker/util/story'
+require 'pivotal-tracker'
 
-options[:push] = true
-
-optparse = OptionParser.new do |opts|
-
-  opts.on( '-b', '--base BASE', "Base branch for pull request" ) do |base|
-    options[:base] = base
-  end
-
-  opts.on( '-h', '--head HEAD', "Head branch for pull request" ) do |head|
-    options[:head] = head
-  end
-
-  opts.on( '-p', '--[no-]push', "Make push to origin" ) do |p|
-    options[:push] = p
+module GitTracker
+  class Command::Track < Command::Base
+    def run(options)
+      selected_story = GitTracker::Util::Story.find_story(@current_project, options)
+      GitTracker::Util::Story.pretty_print selected_story
+    end
   end
 end
-
-optparse.parse!
-
-GitTracker::Command::Finish.new().run options

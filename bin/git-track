@@ -14,27 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'git-tracker/command/finish'
+require 'git-tracker/command/base'
+require 'git-tracker/command/command'
+require 'git-tracker/command/track'
 require 'optparse'
 options = {}
 
-options[:push] = true
-
 optparse = OptionParser.new do |opts|
 
-  opts.on( '-b', '--base BASE', "Base branch for pull request" ) do |base|
-    options[:base] = base
+  opts.on( '-a', '--all', "Show all" ) do
+    options[:all] = true
   end
 
-  opts.on( '-h', '--head HEAD', "Head branch for pull request" ) do |head|
-    options[:head] = head
-  end
-
-  opts.on( '-p', '--[no-]push', "Make push to origin" ) do |p|
-    options[:push] = p
+  opts.on( '-t', '--story_type TYPE', [:feature, :bug, :chore],  "Start story by type" ) do |type|
+    options[:story_type] = type
   end
 end
 
 optparse.parse!
 
-GitTracker::Command::Finish.new().run options
+GitTracker::Command::Track.new().run options

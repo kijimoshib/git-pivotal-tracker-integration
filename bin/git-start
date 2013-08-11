@@ -14,6 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'git-pivotal-tracker-integration/command/start'
+require 'git-tracker/command/base'
+require 'git-tracker/command/command'
+require 'git-tracker/command/start'
+require 'optparse'
 
-GitPivotalTrackerIntegration::Command::Start.new().run ARGV[0]
+options = {}
+
+options[:start] = true
+
+optparse = OptionParser.new do |opts|
+
+  opts.on( '-a', '--all', "Show all" ) do
+    options[:all] = true
+  end
+
+  opts.on( '-s', '--story_id ID', "Start story by id" ) do |id|
+    options[:story_id] = id
+  end
+
+  opts.on( '-t', '--story_type TYPE', [:feature, :bug, :chore],  "Start story by type" ) do |type|
+    options[:story_type] = type
+  end
+
+end
+
+optparse.parse!
+
+GitTracker::Command::Start.new().run options

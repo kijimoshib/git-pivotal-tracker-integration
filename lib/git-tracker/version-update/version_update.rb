@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby -U
-# Git Pivotal Tracker Integration
+# Git Tracker
 # Copyright (c) 2013 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'git-tracker/command/finish'
-require 'optparse'
-options = {}
+require 'git_tracker'
 
-options[:push] = true
-
-optparse = OptionParser.new do |opts|
-
-  opts.on( '-b', '--base BASE', "Base branch for pull request" ) do |base|
-    options[:base] = base
-  end
-
-  opts.on( '-h', '--head HEAD', "Head branch for pull request" ) do |head|
-    options[:head] = head
-  end
-
-  opts.on( '-p', '--[no-]push', "Make push to origin" ) do |p|
-    options[:push] = p
-  end
+# A module encapsulating version update implementations
+module GitTracker::VersionUpdate
 end
-
-optparse.parse!
-
-GitTracker::Command::Finish.new().run options
